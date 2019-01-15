@@ -5,7 +5,7 @@
   2) Detect signs
   3) Detect other cars
   
-we will use the lanes.mp4 file located on this repository.
+The project will detect these objects(^) and will print instructions to the autonoums car
 
 ## Design:
 WIP
