@@ -1,4 +1,4 @@
-# ROS Lane Detection
+# ROS Lane Departure Warning System
 In road-transport terminology, a lane departure warning system is a mechanism designed to warn the driver when the vehicle begins to move out of its lane
 
 ![](output.jpg)
