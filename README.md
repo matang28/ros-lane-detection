@@ -3,7 +3,7 @@ In road-transport terminology, a lane departure warning system is a mechanism de
 
 ![](output.jpg)
 
-## Objectives:
+## Objectives
   1) Detect the lanes on the road even if they are curved
   2) Detect the departure from the center
   3) Publish the departure to ROS topic
@@ -16,15 +16,19 @@ You can download the [demo video by clicking here](teaser_video.mp4)
 
 You can see the whole research & coding process by viewing this [python notebook](research.ipynb)
 
-## Design:
+## Design
 ![](design.png)
 
 
-## Usage in ROS:
-
+## Usage in ROS
 We are providing two scripts that integrates the system into ROS:
 1) `ros_video_publisher.py` - Used to publish the video from the file system into ROS topic called `lanes_video`.
 2) `ros_lane_consumer.py` - Used to consumed the content from the topic `lanes_video`, this script will use our system to process the input video and publish the processed image and departure from center into the following topics: `image_lane_detector`, `image_lane_departure`
 
 
 So first run the `ros_video_publisher.py` and then run the `ros_lane_consumer.py`
+
+## Libraries Used
+* OpenCV
+* RosPy
+* Ros CVBridge
