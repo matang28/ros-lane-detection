@@ -11,5 +11,10 @@ In road-transport terminology, a lane departure warning system is a mechanism de
   
 The project will detect these objects(^) and will print instructions to the autonoums car
 
+## Demo
+You can download the [demo video by clicking here](teaser_video.mp4)
+
+You can see the whole research & coding process by viewing this [python notebook](research.ipynb)
+
 ## Design:
-See this [python notebook](research.ipynb)
+![](design.png)
