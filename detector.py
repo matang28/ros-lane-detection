@@ -1,4 +1,3 @@
-import pickle
 from processors import *
 
 
@@ -28,14 +27,8 @@ class LaneDepartureDetector:
         """
         h, w = image.shape[:2]
 
-        # Remove camera distortion:
-        calib = pickle.load(open('calibration.p', 'rb'))
-        mtx = calib["mtx"]
-        dist = calib["dist"]
-        undist = cv2.undistort(image, mtx, dist, None, mtx)
-
         # Apply some smoothing:
-        blurred = cv2.blur(undist, (15, 15))
+        blurred = cv2.blur(image, (15, 15))
 
         # Create the binary image of the lanes based on the color space:
         hls = to_hls(image)

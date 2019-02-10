@@ -32,7 +32,7 @@ def create_config(height, width):
 
 path = "lanes.mp4"
 video = cv2.VideoCapture(path)
-
+counter = 0
 if video.isOpened():
     width = video.get(3)
     height = video.get(4)
@@ -45,8 +45,16 @@ if video.isOpened():
         if image is None:
             break
 
+        # if counter % 10 == 0:
+        #     cv2.imwrite("./out/before" + str(counter) + str(".jpg"), image)
+
         (final_image, departure) = detector.process_image(image)
         cv2.imshow('Departure Warning', final_image)
+
+        # if counter % 10 == 0:
+        #     cv2.imwrite("./out/after" + str(counter) + str(".jpg"), final_image)
+
+        counter += 1
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
