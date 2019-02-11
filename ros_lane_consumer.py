@@ -26,8 +26,12 @@ def callback(data):
     else:           # Left
         direction = "left"
     
-    # Play a sound that notifies the driver
-    text_to_speech("Move to the " + direction)
+    magnitude = abs(data)
+    
+    # Play a sound that notifies the driver 
+    # if the departure is greater than 50 cm
+    if (magnitude > 0.5)
+        text_to_speech("Move to the " + direction)
 
 rospy.Subscriber("image_lane_departure", Image, callback)
 rospy.spin()

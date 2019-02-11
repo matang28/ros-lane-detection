@@ -22,11 +22,36 @@ You can see the whole research & coding process by viewing this [python notebook
 
 ## Usage in ROS
 We are providing two scripts that integrates the system into ROS:
-1) `ros_video_publisher.py` - Used to publish the video from the file system into ROS topic called `lanes_video`.
-2) `ros_lane_consumer.py` - Used to consumed the content from the topic `lanes_video`, this script will use our system to process the input video and publish the processed image and departure from center into the following topics: `image_lane_detector`, `image_lane_departure`
+1) `ros_video_publisher.py` - Should be used to publish the video from the file system into ROS topic called `lanes_video`.
+2) `ros_lane_consumer.py` - Should be used to consume the content from the topic `lanes_video`, this script will use our system to process the input video and publish the processed image and departure from center into the following topics: `image_lane_detector`, `image_lane_departure`
 
 
 So first run the `ros_video_publisher.py` and then run the `ros_lane_consumer.py`
+
+After running these nodes you can subscribe to the departure data by subscribing to the `image_lane_departrue`, for example:
+
+```python
+def callback(data):
+    data = int(data)
+    
+    # Get the departure direction:
+    direction = ""
+    if (data > 0):  # Right
+        direction = "right"
+    else:           # Left
+        direction = "left"
+    
+    magnitude = abs(data)
+    
+    # Play a sound that notifies the driver 
+    # if the departure is greater than 50 cm
+    if (magnitude > 0.5):
+        text_to_speech("Move to the " + direction)
+
+
+rospy.Subscriber("image_lane_departure", String, callback)
+rospy.spin()
+```
 
 ## Libraries Used
 * OpenCV
