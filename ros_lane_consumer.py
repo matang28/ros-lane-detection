@@ -10,8 +10,37 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
+"""
+Using this script is pretty simple, just set the input topic to be your camera input topic
+and the lane departure from center will be published to `image_lane_departure`
+and the processed image (which is the camera input + detected lanes) to `image_lane_detector`
+
+So any other ROS node can subscribe to changes of the departure, for example:
+
+def callback(data):
+    
+    # Get the departure direction:
+    direction = ""
+    if (data > 0):  # Right
+        direction = "right"
+    else:           # Left
+        direction = "left"
+    
+    # Play a sound that notifies the driver
+    text_to_speech("Move to the " + direction)
+
+rospy.Subscriber("image_lane_departure", Image, callback)
+rospy.spin()
+"""
+
 
 def _create_config(height, width):
+    """
+    Create the initial config needed for the detector
+    :param height: the height of the image
+    :param width: the width of the image
+    :return: src, dst transforms and roi vertices array
+    """
     center_x = 670
     center_y = height / 2
     x_top_factor = 0.04
@@ -39,8 +68,14 @@ def _create_config(height, width):
 
 
 class LaneDepartureConsumer:
+    """
+    A class to encapsulate the lane departure consumer, this class will subscribe
+    to the `lanes_video` topic to get frames from the lanes camera input
+    than it will apply the LaneDepartureDetector on that input to get the
+    processed frame and the actual departure in meters
+    """
     def __init__(self):
-        rospy.init_node('test_vision_node')
+        rospy.init_node('ros_lane_consumer')
         self.bridge = CvBridge()
         self.config = None
         self.detector = None
@@ -50,22 +85,28 @@ class LaneDepartureConsumer:
 
     def callback(self, data):
         try:
-            cv_image = self.bridge.imgmsg_to_cv(data, "bgr8")
+            # Read the image from the input topic:
+            cv_image = self.bridge.imgmsg_to_cv2(data)
         except CvBridgeError, e:
             print e
 
-        if self.config:
+        # If the config hasn't init yet, init it:
+        if self.config is None:
             height = cv_image.shape[0]
             width = cv_image.shape[1]
             self.config = _create_config(height, width)
             self.detector = LaneDepartureDetector(self.config[0], self.config[1], self.config[2])
 
+        # Run the lane detector on the input:
         (processed_image, departure) = self.detector.process_image(cv_image)
 
-        self.departure_publisher.publish(self.bridge.cv2_to_imgmsg(str(departure)))
+        # Publish the departure
+        self.departure_publisher.publish(str(departure))
+        print("The distance from the middle of the lane is: " + str(departure))
 
+        # Publish the processed image:
         try:
-            self.image_publisher.publish(self.bridge.cv2_to_imgmsg(processed_image, "bgr8"))
+            self.image_publisher.publish(self.bridge.cv2_to_imgmsg(processed_image))
         except CvBridgeError as e:
             print(e)
 
@@ -73,7 +114,10 @@ class LaneDepartureConsumer:
 
 
 def main(args):
+    # Init the consumer:
     consumer = LaneDepartureConsumer()
+
+    # Continue to spin
     try:
         rospy.spin()
     except KeyboardInterrupt:
