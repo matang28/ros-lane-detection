@@ -16,6 +16,8 @@ You can download the [demo video by clicking here](teaser_video.mp4)
 
 You can see the whole research & coding process by viewing this [python notebook](research.ipynb)
 
+You can download the HIT poster by [clicking here](poster.pptx)
+
 ## Design
 ![](design.png)
 
